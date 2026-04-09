@@ -1,0 +1,5 @@
+com/qatest/auth/AuthMeTest.class
+com/qatest/base/BaseTest.class
+com/qatest/posts/PostTest.class
+com/qatest/products/ProductTest.class
+com/qatest/auth/LoginTest.class
