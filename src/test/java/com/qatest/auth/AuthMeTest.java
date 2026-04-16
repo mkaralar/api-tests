@@ -1,13 +1,12 @@
 package com.qatest.auth;
-import com.qatest.base.BaseTest;
 
+import com.qatest.base.BaseTest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Arrays;
 import java.util.Map;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthMeTest extends BaseTest {
 
@@ -16,50 +15,30 @@ public class AuthMeTest extends BaseTest {
         Response response = RestAssured
             .given()
                 .header("Content-Type", "application/json")
-                .body("{\"username\": \"emilys\", \"password\": \"emilyspass\"}")
+                .header("Authorization", "Bearer " + accessToken)
             .when()
-                .post("/auth/login")
+                .get("/auth/me")
             .then()
                 .extract().response();
 
         assertEquals(200, response.getStatusCode());
-        assertNotNull(response.jsonPath().getString("accessToken"));
-
-        String accessToken = response.jsonPath().getString("accessToken");
-
-        Response responseSec = RestAssured
-            .given()
-                .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + accessToken)
-            .when()
-                .get("auth/me")
-            .then()
-                .extract().response();
-
-        assertEquals(200, responseSec.getStatusCode());
-        assertEquals("Green", responseSec.jsonPath().getString("eyeColor"));
-        assertEquals("Brown", responseSec.jsonPath().getString("hair.color"));
-        assertEquals(29, responseSec.jsonPath().getInt("age"));
-
-        assertEquals(193.24, responseSec.jsonPath().getDouble("height"), 0.01);
-        // assertEquals("193.24", responseSec.jsonPath().getString("height"));
+        assertEquals("Green", response.jsonPath().getString("eyeColor"));
+        assertEquals("Brown", response.jsonPath().getString("hair.color"));
+        assertEquals(29, response.jsonPath().getInt("age"));
+        assertEquals(193.24, response.jsonPath().getDouble("height"), 0.01);
     }
 
     @Test
-    public void addUserTest(){
+    public void addUserTest() {
+        Response response = RestAssured
+            .given()
+                .header("Content-Type", "application/json")
+                .body(Map.of("firstName", "Test", "tags", Arrays.asList("qa", "automation")))
+            .when()
+                .post("/users/add")
+            .then()
+                .extract().response();
 
-    Response response = RestAssured
-    .given()
-        .header("Content-Type", "application/json")
-        .body(Map.of("firstName", "Test", "tags", Arrays.asList("qa", "automation")))
-    .when()
-      .post("/users/add")
-    .then()
-        .extract().response();
-    
-    
         assertEquals(201, response.getStatusCode());
-        
-}
-
+    }
 }

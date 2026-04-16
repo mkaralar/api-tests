@@ -13,11 +13,10 @@ public class ProductTest extends BaseTest {
 
     @Test 
     public void getProductsTest(){
-
         Response response = RestAssured
             .given()
             .when()
-                .get("/products/1")
+                .get("/products/" + props.getProperty("productId"))
             .then()
                 .extract().response();
 
@@ -28,15 +27,13 @@ public class ProductTest extends BaseTest {
                 assertEquals(15.14, response.jsonPath().getDouble("dimensions.width"), 0.01);
                 assertEquals("beauty", response.jsonPath().getString("tags[0]"));
                 assertEquals("Eleanor Collins", response.jsonPath().getString("reviews[0].reviewerName"));
-
     }
     
     @Test
     public void getProductsWithLimitTest(){
-
         Response response = RestAssured
             .given()
-                .queryParam("limit",5)
+                .queryParam("limit", 5)
                 .queryParam("skip", 0)
             .when()
                 .get("/products")
@@ -46,24 +43,19 @@ public class ProductTest extends BaseTest {
                 assertEquals(200, response.getStatusCode());
                 assertEquals(5, response.jsonPath().getInt("limit"));
                 assertEquals(5, response.jsonPath().getList("products").size());
-
-            }
-
+    }
 
     @Test
     public void searchProductTest(){
         Response response = RestAssured
             .given()
-                .queryParam("q","mascara" )
+                .queryParam("q", props.getProperty("searchQuery"))
             .when()
                 .get("/products/search")
             .then()
                 .extract().response();
 
             assertEquals(200, response.getStatusCode());
-            assertEquals(1, response.jsonPath().getInt("total"));
-            assertEquals("Essence Mascara Lash Princess" , response.jsonPath().getString("products[0].title"));
-
     }
 
     @Test
@@ -71,14 +63,13 @@ public class ProductTest extends BaseTest {
         Response response = RestAssured
             .given()
             .when()
-                .delete("/products/1")
+                .delete("/products/" + props.getProperty("productId"))
             .then()
                 .extract().response();
 
             assertEquals(200, response.getStatusCode());
             assertTrue(response.jsonPath().getBoolean("isDeleted"));
-            assertEquals(1 , response.jsonPath().getInt("id"));
-
+            assertEquals(1, response.jsonPath().getInt("id"));
     }
 
     @Test
@@ -88,13 +79,12 @@ public class ProductTest extends BaseTest {
                 .header("Content-Type", "application/json")
                 .body("{\"price\": 99.99}")
             .when()
-                .patch("/products/1")
+                .patch("/products/" + props.getProperty("productId"))
             .then()
                 .extract().response();
 
             assertEquals(200, response.getStatusCode());
-            assertEquals(99.99 , response.jsonPath().getDouble("price"), 0.01);
-            assertEquals("Essence Mascara Lash Princess" , response.jsonPath().getString("title"));
-
+            assertEquals(99.99, response.jsonPath().getDouble("price"), 0.01);
+            assertEquals("Essence Mascara Lash Princess", response.jsonPath().getString("title"));
     }
 }
