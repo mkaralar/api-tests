@@ -1,0 +1,6 @@
+"Epic","Feature","Story","FAILED","BROKEN","PASSED","SKIPPED","UNKNOWN"
+"","","","0","0","21","0","0"
+"User Management","Authentication","Login with valid credentials","0","0","1","0","0"
+"User Management","Authentication","Login with plain body","0","0","1","0","0"
+"User Management","Authentication","Login with SQL injection","0","0","1","0","0"
+"User Management","Authentication","Login with wrong password","0","0","1","0","0"
